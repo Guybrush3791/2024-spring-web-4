@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringWeb4Application {
 
 	/**
+	 * REPO: 2024-spring-web-4
+	 * 
 	 * TODO:
 	 * 
 	 * In nuovo esercizio creare classi per definire le due seguenti entita':
