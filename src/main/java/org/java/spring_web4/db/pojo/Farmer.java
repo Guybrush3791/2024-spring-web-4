@@ -2,6 +2,7 @@ package org.java.spring_web4.db.pojo;
 
 import org.java.spring_web4.web.dto.FarmerDto;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

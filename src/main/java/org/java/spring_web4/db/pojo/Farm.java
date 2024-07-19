@@ -6,6 +6,7 @@ import org.java.spring_web4.web.dto.FarmDto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Farm {
     private String city;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "farm")
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
     private List<Farmer> farmers;
 
     public Farm() {
