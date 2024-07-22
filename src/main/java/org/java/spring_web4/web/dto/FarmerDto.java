@@ -1,5 +1,8 @@
 package org.java.spring_web4.web.dto;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FarmerDto {
 
     private String name;
@@ -8,6 +11,8 @@ public class FarmerDto {
     private int age;
 
     private int farmId;
+
+    private List<Integer> specs;
 
     public String getName() {
 
@@ -49,6 +54,16 @@ public class FarmerDto {
         this.farmId = farmId;
     }
 
+    public List<Integer> getSpecs() {
+
+        return specs;
+    }
+
+    public void setSpecs(List<Integer> specs) {
+
+        this.specs = specs;
+    }
+
     @Override
     public String toString() {
 
@@ -57,6 +72,7 @@ public class FarmerDto {
                 "\tsurname: " + surname + ",\n" +
                 "\tage: " + age + ",\n" +
                 "\tfarmId: " + farmId + "\n" +
+                "\tspecializationIds: " + Arrays.toString(specs.toArray()) + "\n" +
                 "}";
     }
 }

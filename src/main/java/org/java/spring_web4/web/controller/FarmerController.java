@@ -1,12 +1,15 @@
 package org.java.spring_web4.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.java.spring_web4.db.pojo.Farm;
 import org.java.spring_web4.db.pojo.Farmer;
+import org.java.spring_web4.db.pojo.Specialization;
 import org.java.spring_web4.db.serv.FarmServ;
 import org.java.spring_web4.db.serv.FarmerService;
+import org.java.spring_web4.db.serv.SpecializationServ;
 import org.java.spring_web4.web.dto.FarmerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +34,25 @@ public class FarmerController {
     @Autowired
     private FarmServ farmServ;
 
+    @Autowired
+    private SpecializationServ specializationServ;
+
     @GetMapping("/test/add")
     public ResponseEntity<Void> addTestData() {
+
+        Specialization spec1 = new Specialization("Cultivation");
+        Specialization spec2 = new Specialization("Irrigation");
+        Specialization spec3 = new Specialization("Harvesting");
+        Specialization spec4 = new Specialization("Fertilization");
+
+        specializationServ.save(spec1);
+        specializationServ.save(spec2);
+        specializationServ.save(spec3);
+        specializationServ.save(spec4);
+
+        List<Specialization> specList1 = List.of(spec1, spec2);
+        List<Specialization> specList2 = List.of(spec3, spec4);
+        List<Specialization> specList3 = List.of(spec1, spec3);
 
         Farm farm1 = new Farm("Farm1", "Milan");
         Farm farm2 = new Farm("Farm2", "Rome");
@@ -42,9 +62,9 @@ public class FarmerController {
         farmServ.save(farm2);
         farmServ.save(farm3);
 
-        Farmer farmer1 = new Farmer("Guybrush", "Threepwood", 30, farm1);
-        Farmer farmer2 = new Farmer("Elaine", "Marley", 35, farm3);
-        Farmer farmer3 = new Farmer("LeChuck", "LeChuck", 40, farm3);
+        Farmer farmer1 = new Farmer("Guybrush", "Threepwood", 30, farm1, specList1);
+        Farmer farmer2 = new Farmer("Elaine", "Marley", 35, farm3, specList2);
+        Farmer farmer3 = new Farmer("LeChuck", "LeChuck", 40, farm3, specList3);
 
         farmerService.save(farmer1);
         farmerService.save(farmer2);
@@ -64,13 +84,29 @@ public class FarmerController {
     public ResponseEntity<Farmer> addFarmer(
             @RequestBody FarmerDto farmerDto) {
 
+        System.out.println("Farmer DTO: " + farmerDto);
+
+        List<Specialization> specList = new ArrayList<>();
+        for (Integer specId : farmerDto.getSpecs()) {
+
+            Optional<Specialization> optSpec = specializationServ.findById(specId);
+
+            if (optSpec.isEmpty())
+                return ResponseEntity.badRequest().build();
+
+            Specialization spec = optSpec.get();
+
+            specList.add(spec);
+        }
+
         Optional<Farm> optFarm = farmServ.findById(farmerDto.getFarmId());
 
         if (optFarm.isEmpty())
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
 
         Farm farm = optFarm.get();
         Farmer newFarmer = new Farmer(farmerDto);
+        newFarmer.setSpecializations(specList);
 
         newFarmer.setFarm(farm);
         farmerService.save(newFarmer);
@@ -79,7 +115,7 @@ public class FarmerController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Farmer> deleteFarmer(
+    public ResponseEntity<Void> deleteFarmer(
             @PathVariable int id) {
 
         Optional<Farmer> optFarmer = farmerService.findById(id);
@@ -90,7 +126,7 @@ public class FarmerController {
         Farmer farmer = optFarmer.get();
         farmerService.delete(farmer);
 
-        return ResponseEntity.ok(farmer);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("{id}")

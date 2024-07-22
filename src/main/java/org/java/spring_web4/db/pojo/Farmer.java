@@ -1,14 +1,16 @@
 package org.java.spring_web4.db.pojo;
 
+import java.util.List;
+
 import org.java.spring_web4.web.dto.FarmerDto;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -30,15 +32,19 @@ public class Farmer {
     @JoinColumn(nullable = false)
     private Farm farm;
 
+    @ManyToMany
+    private List<Specialization> specializations;
+
     public Farmer() {
     }
 
-    public Farmer(String name, String surname, int age, Farm farm) {
+    public Farmer(String name, String surname, int age, Farm farm, List<Specialization> specializations) {
 
         setName(name);
         setSurname(surname);
         setAge(age);
         setFarm(farm);
+        setSpecializations(specializations);
     }
 
     public Farmer(FarmerDto farmerDto) {
@@ -84,6 +90,19 @@ public class Farmer {
 
     public void setFarm(Farm farm) {
         this.farm = farm;
+    }
+
+    public List<Specialization> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(List<Specialization> specializations) {
+        this.specializations = specializations;
+    }
+
+    public void addSpecialization(Specialization specialization) {
+
+        specializations.add(specialization);
     }
 
     public void update(FarmerDto farmerDto) {
